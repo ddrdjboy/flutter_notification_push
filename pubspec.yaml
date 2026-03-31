@@ -1,7 +1,7 @@
 name: flutter_notification_push
 description: "Flutter notification plugin project."
 version: 0.0.1
-homepage:
+homepage: https://github.com/ddrdjboy/flutter_notification_push
 
 environment:
   sdk: ^3.11.1
