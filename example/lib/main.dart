@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
+import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_notification/push_notification.dart';
+import 'package:flutter_notification_push/push_notification.dart';
+import 'package:http/http.dart' as http;
 
 void main() {
+  final uri = Uri.parse('https://www.baidu.com');
+  http.post(uri, headers: {'Content-Type': 'application/json'});
   runApp(const MyApp());
 }
+
+Future<void> _registerDevice(String token) async {}
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
@@ -42,6 +49,7 @@ class _MyAppState extends State<MyApp> {
         push_token = token;
       });
       print("🔥 token: $token");
+      _registerDevice(token);
     });
 
     Push.onMessage.listen((msg) {
@@ -51,6 +59,22 @@ class _MyAppState extends State<MyApp> {
     Push.onClick.listen((msg) {
       print("👆 click: ${msg.data}");
     });
+  }
+
+  Future<void> _registerDevice(String token) async {
+    final uri = Uri.parse('http://192.168.1.29:8080/api/devices/register');
+    final response = await http.post(
+      uri,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'userId': 'user001',
+        'token': token,
+        'platform': defaultTargetPlatform == TargetPlatform.iOS
+            ? 'IOS'
+            : 'ANDROID',
+      }),
+    );
+    print("📡 register response: ${response.statusCode} ${response.body}");
   }
 
   @override
